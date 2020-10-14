@@ -1,0 +1,473 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>project3</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-04-19"><meta name="DC.source" content="project3.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">P1</a></li><li><a href="#3">P2</a></li><li><a href="#4">Functions</a></li></ul></div><pre class="codeinput"><span class="comment">% Stoch Project III</span>
+<span class="comment">% Weizhe Guo</span>
+</pre><h2 id="2">P1</h2><pre class="codeinput">var = 0.3; <span class="comment">% Self_assigned variance</span>
+detect_val = 1; <span class="comment">% Detection value of the target</span>
+p0 = 0.8; <span class="comment">% Probability of the target is not present</span>
+
+<span class="comment">% a)</span>
+<span class="comment">% The "same variance, different mean" model for Gaussin is appropriate</span>
+<span class="comment">% here. As the wrong result and the correct result are both Gaussin with</span>
+<span class="comment">% different means.</span>
+noise = normrnd(0, var^0.5,[1,1000]); <span class="comment">% Noise matrix</span>
+target = ones(1,1000) .* binornd(1, 1-p0, [1,1000]) .* detect_val; <span class="comment">% target matrix is modeled by bionomial distribution with successful rate of 0.8</span>
+
+receive = noise + target;
+
+<span class="comment">% In the "same mean, different var" Gaussin model, we just need to compare</span>
+<span class="comment">% the observation with the calculated threshold</span>
+<span class="comment">% Implement the function below to get the threshold</span>
+
+thresh =  MAP(var,detect_val,p0); <span class="comment">% Get the optimal threshold</span>
+decision = zeros(size(receive));
+decision(receive(:) &gt; thresh) = detect_val; <span class="comment">% creating a decision matrix; if above threshhold, set it to be 1</span>
+
+err = zeros(1,1000); <span class="comment">% Create an 1* 1000 error matrix</span>
+<span class="comment">% If the decision is different from the actual target, we have a wrong</span>
+<span class="comment">% detection. Sum up the number of wrong detections and devide by 1000 to</span>
+<span class="comment">% get the probability of detection error</span>
+err(decision(:) ~= target(:)) = 1;
+err_prob = sum(err) / 1000; <span class="comment">% The actual probability of error</span>
+
+prob_false = 1 - normcdf(thresh, 0, var^0.5);
+prob_miss = normcdf(thresh, detect_val, var^0.5);
+err_prob_theory = prob_false * 0.8 + prob_miss * 0.2; <span class="comment">% The theoretical probability of error</span>
+sprintf(<span class="string">'The experimental probabilty of error from the detector is %d'</span>, err_prob)
+sprintf(<span class="string">'The theoretical probabilty of error is %d'</span>, err_prob_theory)
+
+<span class="comment">% b)</span>
+[prob_false1, prob_detection1] = ROC_curve(detect_val, var); <span class="comment">%SNR = 1/0.3 = 3.33</span>
+[prob_false2, prob_detection2] = ROC_curve(detect_val, 0.2); <span class="comment">%SNR = 1/0.2 = 5</span>
+[prob_false3, prob_detection3] = ROC_curve(detect_val, 0.1); <span class="comment">%SNR = 1/0.1 = 10</span>
+
+figure
+plot(prob_false1, prob_detection1)
+hold <span class="string">on</span>
+plot(prob_false2, prob_detection2)
+plot(prob_false3, prob_detection3)
+hold <span class="string">off</span>
+
+legend(<span class="string">'SNR = 3.33'</span>, <span class="string">'SNR = 5'</span>, <span class="string">'SNR = 10'</span>)
+xlabel(<span class="string">'probability of false alarm'</span>)
+ylabel(<span class="string">'probability of detection'</span>)
+title(<span class="string">'ROC curves for different SNRs'</span>)
+
+<span class="comment">% c)</span>
+<span class="comment">% Since missing the target is 10 times worse than false alarm, the cost</span>
+<span class="comment">% structure has to change, which is revealed in the ROC_dot function</span>
+[false_point, detect_point] = ROC_dot(detect_val, var, p0); <span class="comment">% choose SNR = 1/0.3 = 3.33</span>
+figure
+plot(false_point, detect_point,<span class="string">'+'</span>)
+legend(<span class="string">'SNR = 3.33'</span>)
+xlim([0,1])
+ylim([0,1])
+xlabel(<span class="string">'probability of false alarm'</span>)
+ylabel(<span class="string">'probability of detection'</span>)
+title(<span class="string">'Optimum threshold for a specific SNR curve'</span>)
+
+<span class="comment">% d)</span>
+<span class="comment">% choose the case that SNR = 3.33</span>
+part1 = linspace(0,1,100);
+c_miss = 10;
+c_falseAlarm = 1;
+expected_cost = c_miss * part1 + c_falseAlarm.*((1-p0)*ones(1,100)).*false_point - c_miss .* part1 .* detect_point;
+figure
+plot(part1, expected_cost)
+xlabel(<span class="string">'Prior target present probability'</span>)
+ylabel(<span class="string">'Cost'</span>)
+title(<span class="string">'Cost for different target present probabilities'</span>)
+
+<span class="comment">% e)</span>
+p0 = 0.8;
+var_z = 0.6; <span class="comment">% var_z / var = 0.6/0.3 = 2</span>
+var_z1 = 0.9; <span class="comment">% var_z1/ var = 0.9/0.3 = 3</span>
+var_z2 = 1.2; <span class="comment">% var_z2/ var = 1.2/0.3 = 4</span>
+
+noise_present = normrnd(0, var^0.5,[1,1000]);
+noise_notPresent = normrnd(0, var_z^0.5,[1,1000]);
+target2 =  ones(1,1000) .* binornd(1, 1-p0, [1,1000]); <span class="comment">% 1 indicadte target is present</span>
+target2_not = ones(1,1000) - target2; <span class="comment">% Inverse of target2, 1 indicate target is not present</span>
+received = ones(1,1000) .* detect_val + target2 .* noise_present + target2_not .* noise_notPresent;
+
+[decision2, thresh2] = MAP2(var, var_z, p0, received, detect_val);
+err2 = zeros(1,1000);
+err2(decision2(:) ~= target2(:)) = 1;
+prob_err2 = sum(err2) / 1000;
+
+prob_false_prime = 1 - 2 * normcdf(-1*thresh2^0.5, 0, var_z^0.5);
+prob_miss_prime = 2* normcdf(-1*thresh2^0.5, 0, var^0.5);
+prob_err_theory2 = prob_false_prime * 0.8 + prob_miss_prime * 0.2;
+sprintf(<span class="string">'The experimental probabilty of error from the detector for the new model is %d'</span>, prob_err2)
+sprintf(<span class="string">'The theoretical probabilty of error for the new model is %d'</span>, prob_err_theory2)
+
+[prob_false_prime1, prob_detection_prime1] = ROC_curve2(detect_val, var, var_z);
+[prob_false_prime2, prob_detection_prime2] = ROC_curve2(detect_val, var, var_z1);
+[prob_false_prime3, prob_detection_prime3] = ROC_curve2(detect_val, var, var_z2);
+
+figure
+plot(prob_false_prime1, prob_detection_prime1);
+hold <span class="string">on</span>
+plot(prob_false_prime2, prob_detection_prime2);
+plot(prob_false_prime3, prob_detection_prime3);
+
+xlabel(<span class="string">'probabilty of false alarm'</span>)
+ylabel(<span class="string">'probability of detection'</span>)
+title(<span class="string">'ROC curve with different ratios of var_z / var'</span>)
+legend(<span class="string">'var ratio = 2'</span>, <span class="string">'var ratio = 3'</span>, <span class="string">'var ratio = 4'</span>)
+</pre><img vspace="5" hspace="5" src="project3_01.png" alt=""> <img vspace="5" hspace="5" src="project3_02.png" alt=""> <img vspace="5" hspace="5" src="project3_03.png" alt=""> <img vspace="5" hspace="5" src="project3_04.png" alt=""> <h2 id="3">P2</h2><p>Thanks for Alex for helping me on this problem</p><pre class="codeinput">iris=load(<span class="string">"iris.mat"</span>);
+X=iris.features;
+y=iris.labels;
+ind = randperm(size(X,1));
+shuf_X=X(ind,:);
+shuf_y=y(ind);
+X_test=shuf_X(1:size(X,1)/2,:);
+X_train=shuf_X(size(X,1)/2+1:end,:);
+y_test=shuf_y(1:size(X,1)/2);
+y_train=shuf_y(size(X,1)/2+1:end); <span class="comment">% clean up the data and seperate into training set and test set</span>
+
+part1=X_train(y_train==1,:);
+part2=X_train(y_train==2,:);
+part3=X_train(y_train==3,:);
+
+cov1=cov(part1);
+cov2=cov(part2);
+cov3=cov(part3);
+<span class="comment">% mu is a four dimensional vector for four features</span>
+mu1=[mean(part1(:,1)),mean(part1(:,2)),mean(part1(:,3)),mean(part1(:,4))];
+mu2=[mean(part2(:,1)),mean(part2(:,2)),mean(part2(:,3)),mean(part2(:,4))];
+mu3=[mean(part3(:,1)),mean(part3(:,2)),mean(part3(:,3)),mean(part3(:,4))];
+
+Like=[mvnpdf(X_test,mu1,cov1),mvnpdf(X_test,mu2,cov2),mvnpdf(X_test,mu3,cov3)];
+[val,result]=max(Like,[],2);
+error=y_test~=result;
+error_sum = sum(error);
+error_percentage = error_sum/size(y_test,1)
+conf_matrix = confusionmat(y_test,result)
+</pre><pre class="codeoutput">
+error_percentage =
+
+    0.0533
+
+
+conf_matrix =
+
+    26     0     0
+     0    24     3
+     0     1    21
+
+</pre><h2 id="4">Functions</h2><pre class="codeinput"><span class="keyword">function</span> thresh = MAP(var, A, p0)
+    eta = p0 / (1 - p0);
+    thresh = A/2 + var * log(eta) / A;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [p_falseAlarm, p_detection] = ROC_curve(A, var)
+    std = var ^ 0.5;
+    gamma = linspace(-3*std,3*std,1000);
+    p_falseAlarm = ones(1,1000) - normcdf(gamma(:),0,std)';
+    p_detection = ones(1,1000) - normcdf(gamma(:),A,std)';
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [false_point, detect_point] = ROC_dot(A, var, p0)
+    std = var ^ 0.5;
+    eta = 1/10 * (p0 / (1 - p0));
+    gamma = A/2 + var * log(eta) / A;
+    false_point = 1 - normcdf(gamma,0,std);
+    detect_point = 1 - normcdf(gamma,A,std);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [decision2, thresh2] = MAP2(var_x, var_z, p0, received, A)
+    decision2 = zeros(size(received));
+    std_z = var_z ^ 0.5;
+    std_x = var_x ^ 0.5;
+    eta = p0 / (1 - p0);
+    thresh2 = 2 * (var_x*var_z/(var_z - var_x)) * log(std_x / std_z * eta);
+    received(:) = received(:) - A;
+    decision2(-1*received(:).^2 &gt; thresh2) = 1;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [p_FA, p_D] = ROC_curve2(A, var_x, var_z)
+    std_x = var_x ^ 0.5;
+    std_z = var_z ^ 0.5;
+    gamma = linspace(-3*std_z,3*std_z,1000);
+    p_FA = ones(1,1000) - 2 * normcdf(gamma(:),0,std_z)';
+    p_D = ones(1,1000) - 2 * normcdf(gamma(:),A,std_x)';
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+ans =
+
+    'The experimental probabilty of error from the detector is 1.520000e-01'
+
+
+ans =
+
+    'The theoretical probabilty of error is 1.255911e-01'
+
+
+ans =
+
+    'The experimental probabilty of error from the detector for the new model is 2.150000e-01'
+
+
+ans =
+
+    'The theoretical probabilty of error for the new model is 6.888475e-01'
+
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% Stoch Project III
+% Weizhe Guo
+
+%% P1
+var = 0.3; % Self_assigned variance
+detect_val = 1; % Detection value of the target
+p0 = 0.8; % Probability of the target is not present
+
+% a)
+% The "same variance, different mean" model for Gaussin is appropriate
+% here. As the wrong result and the correct result are both Gaussin with
+% different means.
+noise = normrnd(0, var^0.5,[1,1000]); % Noise matrix
+target = ones(1,1000) .* binornd(1, 1-p0, [1,1000]) .* detect_val; % target matrix is modeled by bionomial distribution with successful rate of 0.8
+
+receive = noise + target; 
+
+% In the "same mean, different var" Gaussin model, we just need to compare
+% the observation with the calculated threshold
+% Implement the function below to get the threshold
+
+thresh =  MAP(var,detect_val,p0); % Get the optimal threshold
+decision = zeros(size(receive));
+decision(receive(:) > thresh) = detect_val; % creating a decision matrix; if above threshhold, set it to be 1
+
+err = zeros(1,1000); % Create an 1* 1000 error matrix
+% If the decision is different from the actual target, we have a wrong
+% detection. Sum up the number of wrong detections and devide by 1000 to
+% get the probability of detection error
+err(decision(:) ~= target(:)) = 1; 
+err_prob = sum(err) / 1000; % The actual probability of error 
+
+prob_false = 1 - normcdf(thresh, 0, var^0.5);
+prob_miss = normcdf(thresh, detect_val, var^0.5);
+err_prob_theory = prob_false * 0.8 + prob_miss * 0.2; % The theoretical probability of error
+sprintf('The experimental probabilty of error from the detector is %d', err_prob)
+sprintf('The theoretical probabilty of error is %d', err_prob_theory)
+
+% b)
+[prob_false1, prob_detection1] = ROC_curve(detect_val, var); %SNR = 1/0.3 = 3.33
+[prob_false2, prob_detection2] = ROC_curve(detect_val, 0.2); %SNR = 1/0.2 = 5
+[prob_false3, prob_detection3] = ROC_curve(detect_val, 0.1); %SNR = 1/0.1 = 10
+
+figure
+plot(prob_false1, prob_detection1)
+hold on
+plot(prob_false2, prob_detection2)
+plot(prob_false3, prob_detection3)
+hold off
+
+legend('SNR = 3.33', 'SNR = 5', 'SNR = 10')
+xlabel('probability of false alarm')
+ylabel('probability of detection')
+title('ROC curves for different SNRs')
+
+% c)
+% Since missing the target is 10 times worse than false alarm, the cost
+% structure has to change, which is revealed in the ROC_dot function
+[false_point, detect_point] = ROC_dot(detect_val, var, p0); % choose SNR = 1/0.3 = 3.33
+figure
+plot(false_point, detect_point,'+')
+legend('SNR = 3.33')
+xlim([0,1])
+ylim([0,1])
+xlabel('probability of false alarm')
+ylabel('probability of detection')
+title('Optimum threshold for a specific SNR curve')
+
+% d)
+% choose the case that SNR = 3.33
+part1 = linspace(0,1,100);
+c_miss = 10;
+c_falseAlarm = 1;
+expected_cost = c_miss * part1 + c_falseAlarm.*((1-p0)*ones(1,100)).*false_point - c_miss .* part1 .* detect_point;
+figure
+plot(part1, expected_cost)
+xlabel('Prior target present probability')
+ylabel('Cost')
+title('Cost for different target present probabilities')
+
+% e)
+p0 = 0.8;
+var_z = 0.6; % var_z / var = 0.6/0.3 = 2
+var_z1 = 0.9; % var_z1/ var = 0.9/0.3 = 3
+var_z2 = 1.2; % var_z2/ var = 1.2/0.3 = 4
+
+noise_present = normrnd(0, var^0.5,[1,1000]);
+noise_notPresent = normrnd(0, var_z^0.5,[1,1000]);
+target2 =  ones(1,1000) .* binornd(1, 1-p0, [1,1000]); % 1 indicadte target is present
+target2_not = ones(1,1000) - target2; % Inverse of target2, 1 indicate target is not present
+received = ones(1,1000) .* detect_val + target2 .* noise_present + target2_not .* noise_notPresent;
+
+[decision2, thresh2] = MAP2(var, var_z, p0, received, detect_val);
+err2 = zeros(1,1000);
+err2(decision2(:) ~= target2(:)) = 1;
+prob_err2 = sum(err2) / 1000;
+
+prob_false_prime = 1 - 2 * normcdf(-1*thresh2^0.5, 0, var_z^0.5);
+prob_miss_prime = 2* normcdf(-1*thresh2^0.5, 0, var^0.5);
+prob_err_theory2 = prob_false_prime * 0.8 + prob_miss_prime * 0.2; 
+sprintf('The experimental probabilty of error from the detector for the new model is %d', prob_err2)
+sprintf('The theoretical probabilty of error for the new model is %d', prob_err_theory2)
+
+[prob_false_prime1, prob_detection_prime1] = ROC_curve2(detect_val, var, var_z);
+[prob_false_prime2, prob_detection_prime2] = ROC_curve2(detect_val, var, var_z1);
+[prob_false_prime3, prob_detection_prime3] = ROC_curve2(detect_val, var, var_z2);
+
+figure
+plot(prob_false_prime1, prob_detection_prime1);
+hold on
+plot(prob_false_prime2, prob_detection_prime2);
+plot(prob_false_prime3, prob_detection_prime3);
+
+xlabel('probabilty of false alarm')
+ylabel('probability of detection')
+title('ROC curve with different ratios of var_z / var')
+legend('var ratio = 2', 'var ratio = 3', 'var ratio = 4')
+
+%% P2 
+% Thanks for Alex for helping me on this problem
+iris=load("iris.mat");
+X=iris.features;
+y=iris.labels;
+ind = randperm(size(X,1));
+shuf_X=X(ind,:);
+shuf_y=y(ind);
+X_test=shuf_X(1:size(X,1)/2,:);
+X_train=shuf_X(size(X,1)/2+1:end,:);
+y_test=shuf_y(1:size(X,1)/2);
+y_train=shuf_y(size(X,1)/2+1:end); % clean up the data and seperate into training set and test set
+
+part1=X_train(y_train==1,:);
+part2=X_train(y_train==2,:);
+part3=X_train(y_train==3,:);
+
+cov1=cov(part1);
+cov2=cov(part2);
+cov3=cov(part3);
+% mu is a four dimensional vector for four features
+mu1=[mean(part1(:,1)),mean(part1(:,2)),mean(part1(:,3)),mean(part1(:,4))];
+mu2=[mean(part2(:,1)),mean(part2(:,2)),mean(part2(:,3)),mean(part2(:,4))];
+mu3=[mean(part3(:,1)),mean(part3(:,2)),mean(part3(:,3)),mean(part3(:,4))];
+
+Like=[mvnpdf(X_test,mu1,cov1),mvnpdf(X_test,mu2,cov2),mvnpdf(X_test,mu3,cov3)];
+[val,result]=max(Like,[],2);
+error=y_test~=result;
+error_sum = sum(error);
+error_percentage = error_sum/size(y_test,1)
+conf_matrix = confusionmat(y_test,result)
+
+%% Functions
+function thresh = MAP(var, A, p0)
+    eta = p0 / (1 - p0);
+    thresh = A/2 + var * log(eta) / A;
+end
+
+function [p_falseAlarm, p_detection] = ROC_curve(A, var) 
+    std = var ^ 0.5;
+    gamma = linspace(-3*std,3*std,1000);
+    p_falseAlarm = ones(1,1000) - normcdf(gamma(:),0,std)';
+    p_detection = ones(1,1000) - normcdf(gamma(:),A,std)';
+end
+
+function [false_point, detect_point] = ROC_dot(A, var, p0)
+    std = var ^ 0.5;
+    eta = 1/10 * (p0 / (1 - p0));
+    gamma = A/2 + var * log(eta) / A;
+    false_point = 1 - normcdf(gamma,0,std);
+    detect_point = 1 - normcdf(gamma,A,std);
+end
+
+function [decision2, thresh2] = MAP2(var_x, var_z, p0, received, A)
+    decision2 = zeros(size(received));
+    std_z = var_z ^ 0.5;
+    std_x = var_x ^ 0.5;
+    eta = p0 / (1 - p0);
+    thresh2 = 2 * (var_x*var_z/(var_z - var_x)) * log(std_x / std_z * eta);
+    received(:) = received(:) - A; 
+    decision2(-1*received(:).^2 > thresh2) = 1;
+end
+
+function [p_FA, p_D] = ROC_curve2(A, var_x, var_z)
+    std_x = var_x ^ 0.5;
+    std_z = var_z ^ 0.5;
+    gamma = linspace(-3*std_z,3*std_z,1000);
+    p_FA = ones(1,1000) - 2 * normcdf(gamma(:),0,std_z)';
+    p_D = ones(1,1000) - 2 * normcdf(gamma(:),A,std_x)';
+end
+##### SOURCE END #####
+--></body></html>

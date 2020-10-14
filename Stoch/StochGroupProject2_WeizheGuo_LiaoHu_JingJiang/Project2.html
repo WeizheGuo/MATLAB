@@ -1,0 +1,474 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Project2</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-04-05"><meta name="DC.source" content="Project2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Scenario 1</a></li><li><a href="#4">Scenario 2</a></li><li><a href="#6">Scenario 3</a></li><li><a href="#8">applied functions</a></li></ul></div><pre class="codeinput"><span class="comment">% Stoch Project II</span>
+<span class="comment">% Weizhe Guo, Liao Hu, and Jing Jiang</span>
+</pre><h2 id="2">Scenario 1</h2><pre class="codeinput"><span class="comment">% System: x = h * theta + v</span>
+<span class="comment">% Where v is Gaussian with zero-mean, and variance ?^2, and h is a known parameter.</span>
+<span class="comment">% Let h = .5 for this exercise.</span>
+
+num_iter = 1000; <span class="comment">% Number of iterations</span>
+num_obs =  100;  <span class="comment">% Number of observations</span>
+
+h = 0.5; <span class="comment">% This is the h as stated in Scenario 1</span>
+mu_theta = 10; <span class="comment">% Mean of Theta</span>
+var_theta = 3; <span class="comment">% Variance of Theta</span>
+var_noise = 6; <span class="comment">% Variance of the Noise</span>
+
+true_theta=normrnd(mu_theta,sqrt(var_theta),[1,num_iter]); <span class="comment">% true value of theta</span>
+v_all = normrnd(0,sqrt(var_noise),[num_obs,num_iter]); <span class="comment">% a matrix for all v values for each observation and iteration</span>
+
+<span class="comment">% c)</span>
+<span class="comment">% pre-allocate memory</span>
+MMSE_est = zeros(num_iter,num_obs);
+MMSE = zeros(1,num_obs);
+
+<span class="keyword">for</span> n=1:num_obs <span class="comment">% Loop through every observation</span>
+   x = v_all(1:n,:)+h*true_theta; <span class="comment">%dim:n*iter_N, each column is one iteration</span>
+   [MMSE_est(:,n),MMSE(n)] = calculate_MMSE_params(true_theta, h, x, var_theta, var_noise, mu_theta);
+<span class="keyword">end</span>
+
+<span class="comment">% for ML</span>
+ML_est = zeros(num_iter,num_obs);
+ML_err = zeros(1,num_obs);
+
+<span class="keyword">for</span> n=1:num_obs
+    x = v_all(1:n,:)+h*true_theta;
+    temp = mean(x, 1)/h;
+    ML_est(:,n) = temp;
+    ML_err(n) = mean((temp - true_theta).^2);
+<span class="keyword">end</span>
+
+<span class="comment">% d) Plotting MSE for theta in different distribution</span>
+<span class="comment">% Initialize new dist</span>
+theta_uni = 10*rand([1,num_iter]);
+mu_uni = 1/2*10;
+var_uni = 1/12*10^2; <span class="comment">% recalculate the mu and var value for uniform theta</span>
+
+mu_exp = mu_theta;
+var_exp = mu_exp^2; <span class="comment">% for exp distribution, variance is square of its mean</span>
+theta_exp = exprnd(mu_exp,[1,num_iter]);
+
+<span class="comment">% pre-allocation</span>
+MMSE_est_uni=zeros(num_iter,num_obs);
+MMSE_uni=zeros(1,num_obs);
+MMSE_est_exp=zeros(num_iter,num_obs);
+MMSE_exp=zeros(1,num_obs);
+
+<span class="keyword">for</span> n=1:num_obs
+   x = v_all(1:n,:)+h*true_theta;
+   [MMSE_est_uni(:,n),MMSE_uni(n)]=calculate_MMSE_params(theta_uni, h, x, var_uni, var_noise, mu_uni);
+   [MMSE_est_exp(:,n),MMSE_exp(n)]=calculate_MMSE_params(theta_exp, h, x, var_exp, var_noise, mu_exp);
+<span class="keyword">end</span>
+
+<span class="comment">% Plot all results</span>
+figure();
+plot(1:1:num_obs,MMSE);
+hold <span class="string">on</span>
+plot(1:1:num_obs,ML_err);
+title(<span class="string">"MMSE and ML Estimators"</span>)
+legend(<span class="string">"MMSE"</span>, <span class="string">"ML"</span>);
+xlabel(<span class="string">'Number of Observations'</span>)
+ylabel(<span class="string">'Error'</span>)
+
+
+figure();
+plot(1:1:num_obs,MMSE_uni);
+hold <span class="string">on</span>
+plot(1:1:num_obs,MMSE_exp);
+title(<span class="string">"MMSE Estimator MSE with wrong priors"</span>)
+legend(<span class="string">"MMSE-Uniform"</span>,<span class="string">"MMSE-Exponential"</span>);
+xlabel(<span class="string">'Number of Observations'</span>)
+ylabel(<span class="string">'Error'</span>)
+</pre><img vspace="5" hspace="5" src="Project2_01.png" alt=""> <img vspace="5" hspace="5" src="Project2_02.png" alt=""> <pre>The performance of ML and MMSE estimators are very close with high
+number of observations as they both converge to a small error. With wrong
+priors, however, the error is much bigger, as shown in the plot.</pre><h2 id="4">Scenario 2</h2><p>a) creating original signal signal is either 1 or -1 if no interference</p><pre class="codeinput">original_sig = randi(2,[1,100]); <span class="comment">% suppose the length is 100</span>
+original_sig(original_sig==2) = -1;
+figure
+plot(original_sig)
+title(<span class="string">'original signal (no interference or noise)'</span>)
+ylim([-2,2])
+xlabel(<span class="string">'time'</span>)
+ylabel(<span class="string">'magnitude'</span>)
+
+<span class="comment">% creating interference</span>
+interference = zeros(1,100); <span class="comment">% interference is in phase</span>
+interference(20:49) = original_sig(1:30); <span class="comment">% suppose interference is from 20 to 50</span>
+<span class="comment">% Signal with interference</span>
+y = original_sig + interference;
+figure
+plot(y)
+title(<span class="string">'signal with interference'</span>)
+ylim([-2,2])
+xlabel(<span class="string">'time'</span>)
+ylabel(<span class="string">'magnitude'</span>)
+
+<span class="comment">% creating noise</span>
+<span class="comment">% the max amplitude is set to be 0.1</span>
+yNoisy = y + 0.1*randn(size(y));
+figure
+plot(yNoisy)
+title(<span class="string">'signal with interference noise'</span>)
+ylim([-2,2])
+xlabel(<span class="string">'time'</span>)
+ylabel(<span class="string">'magnitude'</span>)
+
+<span class="comment">% b)</span>
+<span class="comment">% pre-allocate the matrix</span>
+prob_matrix = zeros(100,100);
+pfinal_prev = -inf;
+
+<span class="keyword">for</span> t1 = 1:100
+    <span class="keyword">for</span> t2 = t1+1:100
+        <span class="comment">% half chance of being 1 or -1 from the beginning to t1</span>
+        p1 = sum(log(0.5*normpdf(yNoisy(1:t1),-1,0.1)+0.5*normpdf(yNoisy(1:t1),1,0.1)));
+        <span class="comment">% half chance of being 0 and 1/4 chance of being -2 or 2 in the</span>
+        <span class="comment">% range from t1 to t2</span>
+        p2 = sum(log(0.25*normpdf(yNoisy(t1+1:t2),-2,0.1)+0.5*normpdf(yNoisy(t1+1:t2),0,0.1)+0.25*normpdf(yNoisy(t1+1:t2),2,0.1)));
+        <span class="comment">% half chance of being 1 or -1 from t2 to the end</span>
+        p3 = sum(log(0.5*normpdf(yNoisy(t2+1:end),-1,0.1)+0.5*normpdf(yNoisy(t2+1:end),1,0.1)));
+
+        pfinal = p1 + p2 + p3;
+        prob_matrix(t2,t1) = pfinal;
+        <span class="comment">% find the max likelihood value; updating the value if it is</span>
+        <span class="comment">% greater than its previous likelihood value</span>
+        <span class="keyword">if</span> pfinal &gt; pfinal_prev
+            pfinal_prev = pfinal;
+            t1_est = t1;
+            t2_est = t2;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+sprintf(<span class="string">'The estimate of t1 is %d'</span>, t1_est)
+sprintf(<span class="string">'The estimate of t2 is %d'</span>, t2_est)
+
+<span class="comment">%c)</span>
+figure
+[t1,t2] = meshgrid(1:1:100);
+mesh(t1,t2,prob_matrix);
+title(<span class="string">'likehood value for each combination of t1 and t2'</span>)
+xlabel(<span class="string">'t1'</span>)
+ylabel(<span class="string">'t2'</span>)
+zlabel(<span class="string">'log likelihood value'</span>)
+</pre><pre class="codeoutput">
+ans =
+
+    'The estimate of t1 is 19'
+
+
+ans =
+
+    'The estimate of t2 is 49'
+
+</pre><img vspace="5" hspace="5" src="Project2_03.png" alt=""> <img vspace="5" hspace="5" src="Project2_04.png" alt=""> <img vspace="5" hspace="5" src="Project2_05.png" alt=""> <img vspace="5" hspace="5" src="Project2_06.png" alt=""> <pre>The log likelihood is shown in the 3d plot. And the max likelihood is
+the peak of the surface. The ML is very accurate as it is very close to
+our true value t1 = 20 and t2 = 50</pre><h2 id="6">Scenario 3</h2><pre class="codeinput">data=load(<span class="string">"./data.mat"</span>);
+obs=data.data;
+<span class="comment">% calculation for exponential distribution</span>
+n = size(obs, 2);
+ML_exp_est = 1/mean(obs);
+ML_exp_err = n*log(ML_exp_est)-sum(ML_exp_est*obs);
+
+<span class="comment">% calculation for rayleigh distribution</span>
+ML_ray_est = sqrt(sum(obs.^2)/2/n);
+ML_ray_err = sum(log(obs))-2*n*log(ML_ray_est)-sum(obs.^2)/2/ML_ray_est^2;
+
+sprintf(<span class="string">'The ML estimate of exponential distribution is %d, log likelihood is %d'</span>, ML_exp_est, ML_exp_err)
+sprintf(<span class="string">'The ML estimate of rayleigh distribution is %d, log likelihood is %d'</span>, ML_ray_est, ML_ray_err)
+</pre><pre class="codeoutput">
+ans =
+
+    'The ML estimate of exponential distribution is 7.794844e+00, log likelihood is 1.053462e+03'
+
+
+ans =
+
+    'The ML estimate of rayleigh distribution is 1.016097e-01, log likelihood is 1.365516e+03'
+
+</pre><p>Rayleigh distribution has a higher max likelihood and thus is more likely to be the distribution</p><h2 id="8">applied functions</h2><pre class="codeinput"><span class="keyword">function</span> [estimation, error] = calculate_MMSE_params(true_theta, h, x, var_theta, var_noise, mu_theta)
+    n = size(x,1); <span class="comment">%n is # of measuremnts</span>
+    mu_x = h*mu_theta+0; <span class="comment">% v is drawn from zero-mean dist</span>
+
+    matrix_a=eye(n)*(h^2*var_theta+var_noise)+(ones(n)-eye(n)).*h^2*var_theta;
+    <span class="comment">% According to expansion result, diagonal terms are</span>
+    <span class="comment">% h^2*var_theta+var_noise, whereas other terms in the matrix are h^2*var_theta</span>
+
+    E_x_theta=h*ones(n,1).*var_theta;
+    <span class="comment">% Similarly, E_x_theta can be represented as shown</span>
+
+    estimation=(inv(matrix_a)*E_x_theta).'*(x-mu_x)+mu_theta; <span class="comment">%estimation, one value for each iteration. dim:iter_N*1</span>
+    error=mean((estimation-true_theta).^2); <span class="comment">%Scalar, mean across all iterations</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% Stoch Project II
+% Weizhe Guo, Liao Hu, and Jing Jiang
+
+%% Scenario 1
+
+% System: x = h * theta + v
+% Where v is Gaussian with zero-mean, and variance ?^2, and h is a known parameter. 
+% Let h = .5 for this exercise.
+
+num_iter = 1000; % Number of iterations
+num_obs =  100;  % Number of observations
+
+h = 0.5; % This is the h as stated in Scenario 1
+mu_theta = 10; % Mean of Theta
+var_theta = 3; % Variance of Theta
+var_noise = 6; % Variance of the Noise
+
+true_theta=normrnd(mu_theta,sqrt(var_theta),[1,num_iter]); % true value of theta
+v_all = normrnd(0,sqrt(var_noise),[num_obs,num_iter]); % a matrix for all v values for each observation and iteration
+
+% c)
+% pre-allocate memory
+MMSE_est = zeros(num_iter,num_obs);
+MMSE = zeros(1,num_obs);
+
+for n=1:num_obs % Loop through every observation
+   x = v_all(1:n,:)+h*true_theta; %dim:n*iter_N, each column is one iteration
+   [MMSE_est(:,n),MMSE(n)] = calculate_MMSE_params(true_theta, h, x, var_theta, var_noise, mu_theta);
+end
+
+% for ML
+ML_est = zeros(num_iter,num_obs);
+ML_err = zeros(1,num_obs);
+
+for n=1:num_obs
+    x = v_all(1:n,:)+h*true_theta;
+    temp = mean(x, 1)/h;
+    ML_est(:,n) = temp;
+    ML_err(n) = mean((temp - true_theta).^2);
+end
+
+% d) Plotting MSE for theta in different distribution
+% Initialize new dist
+theta_uni = 10*rand([1,num_iter]);
+mu_uni = 1/2*10;
+var_uni = 1/12*10^2; % recalculate the mu and var value for uniform theta
+
+mu_exp = mu_theta;
+var_exp = mu_exp^2; % for exp distribution, variance is square of its mean
+theta_exp = exprnd(mu_exp,[1,num_iter]);
+
+% pre-allocation
+MMSE_est_uni=zeros(num_iter,num_obs);
+MMSE_uni=zeros(1,num_obs);
+MMSE_est_exp=zeros(num_iter,num_obs);
+MMSE_exp=zeros(1,num_obs);
+
+for n=1:num_obs
+   x = v_all(1:n,:)+h*true_theta;
+   [MMSE_est_uni(:,n),MMSE_uni(n)]=calculate_MMSE_params(theta_uni, h, x, var_uni, var_noise, mu_uni);
+   [MMSE_est_exp(:,n),MMSE_exp(n)]=calculate_MMSE_params(theta_exp, h, x, var_exp, var_noise, mu_exp);
+end
+
+% Plot all results
+figure();
+plot(1:1:num_obs,MMSE);
+hold on
+plot(1:1:num_obs,ML_err);
+title("MMSE and ML Estimators")
+legend("MMSE", "ML");
+xlabel('Number of Observations')
+ylabel('Error')
+
+
+figure();
+plot(1:1:num_obs,MMSE_uni);
+hold on
+plot(1:1:num_obs,MMSE_exp);
+title("MMSE Estimator MSE with wrong priors")
+legend("MMSE-Uniform","MMSE-Exponential");
+xlabel('Number of Observations')
+ylabel('Error')
+%%
+% 
+%  The performance of ML and MMSE estimators are very close with high
+%  number of observations as they both converge to a small error. With wrong 
+%  priors, however, the error is much bigger, as shown in the plot.  
+% 
+
+%% Scenario 2
+% a)
+% creating original signal
+% signal is either 1 or -1 if no interference
+original_sig = randi(2,[1,100]); % suppose the length is 100
+original_sig(original_sig==2) = -1;
+figure
+plot(original_sig)
+title('original signal (no interference or noise)')
+ylim([-2,2])
+xlabel('time')
+ylabel('magnitude')
+
+% creating interference
+interference = zeros(1,100); % interference is in phase
+interference(20:49) = original_sig(1:30); % suppose interference is from 20 to 50
+% Signal with interference
+y = original_sig + interference;
+figure
+plot(y)
+title('signal with interference')
+ylim([-2,2])
+xlabel('time')
+ylabel('magnitude')
+
+% creating noise
+% the max amplitude is set to be 0.1
+yNoisy = y + 0.1*randn(size(y));
+figure
+plot(yNoisy)
+title('signal with interference noise')
+ylim([-2,2])
+xlabel('time')
+ylabel('magnitude')
+
+% b)
+% pre-allocate the matrix
+prob_matrix = zeros(100,100);
+pfinal_prev = -inf;
+
+for t1 = 1:100
+    for t2 = t1+1:100
+        % half chance of being 1 or -1 from the beginning to t1
+        p1 = sum(log(0.5*normpdf(yNoisy(1:t1),-1,0.1)+0.5*normpdf(yNoisy(1:t1),1,0.1)));
+        % half chance of being 0 and 1/4 chance of being -2 or 2 in the
+        % range from t1 to t2
+        p2 = sum(log(0.25*normpdf(yNoisy(t1+1:t2),-2,0.1)+0.5*normpdf(yNoisy(t1+1:t2),0,0.1)+0.25*normpdf(yNoisy(t1+1:t2),2,0.1)));
+        % half chance of being 1 or -1 from t2 to the end
+        p3 = sum(log(0.5*normpdf(yNoisy(t2+1:end),-1,0.1)+0.5*normpdf(yNoisy(t2+1:end),1,0.1)));
+        
+        pfinal = p1 + p2 + p3;
+        prob_matrix(t2,t1) = pfinal;
+        % find the max likelihood value; updating the value if it is
+        % greater than its previous likelihood value
+        if pfinal > pfinal_prev
+            pfinal_prev = pfinal;
+            t1_est = t1;
+            t2_est = t2;
+        end
+    end
+end
+sprintf('The estimate of t1 is %d', t1_est)
+sprintf('The estimate of t2 is %d', t2_est)
+
+%c)
+figure
+[t1,t2] = meshgrid(1:1:100);
+mesh(t1,t2,prob_matrix);
+title('likehood value for each combination of t1 and t2')
+xlabel('t1')
+ylabel('t2')
+zlabel('log likelihood value')
+%%
+% 
+%  The log likelihood is shown in the 3d plot. And the max likelihood is
+%  the peak of the surface. The ML is very accurate as it is very close to
+%  our true value t1 = 20 and t2 = 50
+% 
+
+%% Scenario 3
+data=load("./data.mat");
+obs=data.data;
+% calculation for exponential distribution
+n = size(obs, 2);
+ML_exp_est = 1/mean(obs);
+ML_exp_err = n*log(ML_exp_est)-sum(ML_exp_est*obs);
+
+% calculation for rayleigh distribution
+ML_ray_est = sqrt(sum(obs.^2)/2/n);
+ML_ray_err = sum(log(obs))-2*n*log(ML_ray_est)-sum(obs.^2)/2/ML_ray_est^2;
+
+sprintf('The ML estimate of exponential distribution is %d, log likelihood is %d', ML_exp_est, ML_exp_err)
+sprintf('The ML estimate of rayleigh distribution is %d, log likelihood is %d', ML_ray_est, ML_ray_err)
+
+%%
+% 
+% Rayleigh distribution has a higher max likelihood and thus is more likely
+% to be the distribution
+% 
+
+%% applied functions
+function [estimation, error] = calculate_MMSE_params(true_theta, h, x, var_theta, var_noise, mu_theta)
+    n = size(x,1); %n is # of measuremnts
+    mu_x = h*mu_theta+0; % v is drawn from zero-mean dist
+    
+    matrix_a=eye(n)*(h^2*var_theta+var_noise)+(ones(n)-eye(n)).*h^2*var_theta;
+    % According to expansion result, diagonal terms are
+    % h^2*var_theta+var_noise, whereas other terms in the matrix are h^2*var_theta
+    
+    E_x_theta=h*ones(n,1).*var_theta; 
+    % Similarly, E_x_theta can be represented as shown
+    
+    estimation=(inv(matrix_a)*E_x_theta).'*(x-mu_x)+mu_theta; %estimation, one value for each iteration. dim:iter_N*1
+    error=mean((estimation-true_theta).^2); %Scalar, mean across all iterations
+end
+##### SOURCE END #####
+--></body></html>
